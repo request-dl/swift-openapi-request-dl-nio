@@ -7,7 +7,7 @@ import XCTest
 
 final class OpenAPIRequestDLTests: XCTestCase {
 
-    func testExample() throws {
-        XCTFail("Hello World!")
+    func testPackage() throws {
+        XCTAssertEqual(String(describing: OpenAPIRequestDL.self), "OpenAPIRequestDL")
     }
 }

@@ -7,9 +7,11 @@ on:
       - 'Package.swift'
       - 'Sources/**'
       - 'Tests/**'
+      - '.github/workflows/swift.yml'
 
 jobs:
   swift:
     uses: request-dl/.github/.github/workflows/swift.yml@main
     with:
       swift-version: 5.8
+      platform: macOS-13

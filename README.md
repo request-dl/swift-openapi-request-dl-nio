@@ -1,6 +1,6 @@
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frequest-dl%2Fswift-openapi-request-dl%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/request-dl/swift-openapi-request-dl)
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frequest-dl%2Fswift-openapi-request-dl%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/request-dl/swift-openapi-request-dl)
-[![codecov](https://codecov.io/gh/request-dl/request-dl/branch/main/graph/badge.svg?token=MW5J053T85)](https://codecov.io/gh/request-dl/request-dl)
+[![codecov](https://codecov.io/github/request-dl/swift-openapi-request-dl/branch/main/graph/badge.svg?token=Cz6ro3SEc3)](https://codecov.io/github/request-dl/swift-openapi-request-dl)
 
 # OpenAPIRequestDL
 

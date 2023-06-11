@@ -19,11 +19,11 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "0.1.0"
+            from: "0.1.2"
         ),
         .package(
             url: "https://github.com/apple/swift-docc-plugin",
-            from: "1.0.0"
+            from: "1.2.0"
         )
     ],
     targets: [
