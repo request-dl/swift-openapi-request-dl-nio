@@ -1,0 +1,23 @@
+name: Code Coverage
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Tests/**'
+  pull_request:
+    paths:
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Tests/**'
+
+jobs:
+  code-coverage:
+    uses: request-dl/.github/.github/workflows/code-coverage.yml@main
+    with:
+      swift-version: 5.8
+      package-tests: OpenAPIRequestDLPackageTests
+      target: OpenAPIRequestDL
+    secrets: inherit

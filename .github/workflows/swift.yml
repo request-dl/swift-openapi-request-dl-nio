@@ -1,0 +1,15 @@
+name: Swift
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Tests/**'
+
+jobs:
+  swift:
+    uses: request-dl/.github/.github/workflows/swift.yml@main
+    with:
+      swift-version: 5.8
