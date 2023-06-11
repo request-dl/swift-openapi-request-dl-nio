@@ -4,6 +4,12 @@
 
 # OpenAPIRequestDL
 
+The `RequestDLClientTransport` enables the use of the `OpenAPI` format along with all the available configuration properties provided by `RequestDL`.
+
+To generate code for the objects, you should use the [Swift OpenAPI Generator](https://github.com/apple/swift-openapi-generator).
+
+Additionally, Apple has provided all the details in the WWDC23 session [Meet Swift OpenAPI Generator](https://developer.apple.com/wwdc23/10171).
+
 ## Installation
 
 OpenAPIRequestDL can be installed using Swift Package Manager. To include it in your project,
