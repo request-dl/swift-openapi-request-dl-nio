@@ -13,5 +13,5 @@ jobs:
   swift:
     uses: request-dl/.github/.github/workflows/swift.yml@main
     with:
-      xcode-version: 14.3.1
+      swift-version: 5.8
       platform: macOS-13
