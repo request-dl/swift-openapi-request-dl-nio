@@ -3,3 +3,5 @@
 */
 
 import Foundation
+
+public enum OpenAPIRequestDL {}
