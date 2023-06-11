@@ -36,7 +36,11 @@ let package = Package(
         ),
         .testTarget(
             name: "OpenAPIRequestDLTests",
-            dependencies: ["OpenAPIRequestDL"]
+            dependencies: [
+                "OpenAPIRequestDL",
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .product(name: "RequestDL", package: "request-dl")
+            ]
         )
     ]
 )
