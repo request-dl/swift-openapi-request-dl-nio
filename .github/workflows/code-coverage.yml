@@ -19,6 +19,6 @@ jobs:
     with:
       swift-version: 5.8
       platform: macOS-13
-      package-tests: OpenAPIRequestDLPackageTests
+      package-tests: swift-openapi-request-dlPackageTests
       target: OpenAPIRequestDL
     secrets: inherit
