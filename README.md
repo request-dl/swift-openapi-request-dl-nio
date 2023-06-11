@@ -1,12 +1,12 @@
-[![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frequest-dl%2Frequest-dl%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/request-dl/request-dl)
-[![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frequest-dl%2Frequest-dl%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/request-dl/request-dl)
+[![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frequest-dl%2Fswift-openapi-request-dl%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/request-dl/swift-openapi-request-dl)
+[![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frequest-dl%2Fswift-openapi-request-dl%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/request-dl/swift-openapi-request-dl)
 [![codecov](https://codecov.io/github/request-dl/swift-openapi-request-dl/branch/main/graph/badge.svg?token=Cz6ro3SEc3)](https://codecov.io/github/request-dl/swift-openapi-request-dl)
 
 # OpenAPIRequestDL
 
 ## Installation
 
-RequestDL can be installed using Swift Package Manager. To include it in your project,
+OpenAPIRequestDL can be installed using Swift Package Manager. To include it in your project,
 add the following dependency to your Package.swift file:
 
 ```swift
