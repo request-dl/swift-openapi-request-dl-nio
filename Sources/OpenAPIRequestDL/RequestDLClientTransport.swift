@@ -103,7 +103,7 @@ public struct RequestDLClientTransport: ClientTransport {
         let response = try await task(AnyProperty(
             PropertyGroup {
                 content
-                
+
                 BaseURL(.init(scheme), host: String(baseURL))
                 PropertyForEach(components, id: \.self) {
                     Path($0)
