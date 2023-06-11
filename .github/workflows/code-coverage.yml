@@ -18,6 +18,7 @@ jobs:
     uses: request-dl/.github/.github/workflows/code-coverage.yml@main
     with:
       swift-version: 5.8
+      platform: macOS-13
       package-tests: OpenAPIRequestDLPackageTests
       target: OpenAPIRequestDL
     secrets: inherit

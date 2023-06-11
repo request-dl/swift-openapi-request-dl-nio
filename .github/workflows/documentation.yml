@@ -19,6 +19,7 @@ jobs:
     uses: request-dl/.github/.github/workflows/documentation.yml@main
     with:
       swift-version: 5.8
+      platform: macOS-13
       target: OpenAPIRequestDL
       hosting-base-path: swift-openapi-request-dl
       output: ./_site
