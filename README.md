@@ -10,6 +10,8 @@ To generate code for the objects, you should use the [Swift OpenAPI Generator](h
 
 Additionally, Apple has provided all the details in the WWDC23 session [Meet Swift OpenAPI Generator](https://developer.apple.com/wwdc23/10171).
 
+- [Documentation](https://request-dl.github.io/swift-openapi-request-dl/documentation/openapirequestdl/)
+
 ## Installation
 
 OpenAPIRequestDL can be installed using Swift Package Manager. To include it in your project,
@@ -17,7 +19,7 @@ add the following dependency to your Package.swift file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/request-dl/swift-openapi-request-dl.git", from: "0.1.0")
+    .package(url: "https://github.com/request-dl/swift-openapi-request-dl.git", from: "0.1.1")
 ]
 ```
 
