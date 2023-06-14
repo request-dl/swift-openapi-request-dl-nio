@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "swift-openapi-request-dl",
-    platforms: [.macOS(.v13), .iOS(.v16), .tvOS(.v16), .watchOS(.v9)],
+    platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6)],
     products: [
         .library(
             name: "OpenAPIRequestDL",
@@ -19,7 +19,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "0.1.2"
+            from: "0.1.3"
         ),
         .package(
             url: "https://github.com/apple/swift-docc-plugin",
