@@ -10,7 +10,7 @@ To generate code for the objects, you should use the [Swift OpenAPI Generator](h
 
 Additionally, Apple has provided all the details in the WWDC23 session [Meet Swift OpenAPI Generator](https://developer.apple.com/wwdc23/10171).
 
-- [Documentation](https://request-dl.github.io/swift-openapi-request-dl/documentation/openapirequestdl/)
+- [Documentation](https://swiftpackageindex.com/request-dl/swift-openapi-request-dl/main/documentation/openapirequestdl)
 
 ## Installation
 
