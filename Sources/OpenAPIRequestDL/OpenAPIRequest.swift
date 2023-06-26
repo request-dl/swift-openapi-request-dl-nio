@@ -21,10 +21,15 @@ struct OpenAPIRequest: Property {
             Path(request.path)
         }
 
-        PropertyForEach(request.headerFields, id: \.self) { header in
-            CustomHeader(name: header.name, value: header.value)
-        }
-
         RequestMethod(.init(request.method.name))
+
+        let headers = HTTPHeaders(request.headerFields.map { ($0.name, $0.value) })
+
+        PropertyForEach(headers.names, id: \.self) { name in
+            PropertyForEach((headers[name] ?? []).enumerated(), id: \.offset) { offset, value in
+                CustomHeader(name: name, value: value)
+                    .headerStrategy(offset == .zero ? .setting : .adding)
+            }
+        }
     }
 }

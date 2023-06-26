@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/request-dl/request-dl.git",
       "state" : {
-        "revision" : "988b093477190a7264e54109093a2bd4213a7b02",
-        "version" : "2.3.0"
+        "revision" : "79c43ec8ce5e8ef38d4049a68e8321e4c42ad8ff",
+        "version" : "3.0.0"
       }
     },
     {
@@ -113,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "02ae849d3ed0905d467b13c9056658ca383c9749",
-        "version" : "0.1.3"
+        "revision" : "e81f70f2a8b445224dc6b97d0c31ed0d190e04de",
+        "version" : "0.1.4"
       }
     }
   ],

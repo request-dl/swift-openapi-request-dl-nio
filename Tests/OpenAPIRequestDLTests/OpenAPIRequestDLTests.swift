@@ -18,7 +18,7 @@ final class RequestDLClientTransportTests: XCTestCase {
                 status: .init(code: 200, reason: "Ok"),
                 content: { request }
             )
-            .ignoresProgress()
+            .collectData()
         }
     }
 
@@ -68,7 +68,7 @@ final class RequestDLClientTransportTests: XCTestCase {
                     status: .init(code: 202, reason: "Ok"),
                     content: { request }
                 )
-                .ignoresProgress()
+                .collectData()
             }
         )
 
