@@ -15,15 +15,15 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/request-dl/request-dl.git",
-            from: "3.0.0"
+            from: "3.0.1"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "0.1.4"
+            from: "0.1.9"
         ),
         .package(
             url: "https://github.com/apple/swift-docc-plugin",
-            from: "1.2.0"
+            from: "1.3.0"
         )
     ],
     targets: [

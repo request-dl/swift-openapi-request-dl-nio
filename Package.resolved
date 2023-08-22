@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/request-dl/request-dl.git",
       "state" : {
-        "revision" : "79c43ec8ce5e8ef38d4049a68e8321e4c42ad8ff",
-        "version" : "3.0.0"
+        "revision" : "f98f5fdb7c576c69a5f8111e667c4841ae4b89aa",
+        "version" : "3.0.1"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-docc-plugin",
       "state" : {
-        "revision" : "9b1258905c21fc1b97bf03d1b4ca12c4ec4e5fda",
-        "version" : "1.2.0"
+        "revision" : "26ac5758409154cc448d7ab82389c520fa8a8247",
+        "version" : "1.3.0"
       }
     },
     {
@@ -113,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "e81f70f2a8b445224dc6b97d0c31ed0d190e04de",
-        "version" : "0.1.4"
+        "revision" : "ad847cbfdaa11493a88e508d16e5ab15128483ab",
+        "version" : "0.1.9"
       }
     }
   ],
