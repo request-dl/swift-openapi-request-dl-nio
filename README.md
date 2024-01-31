@@ -19,7 +19,7 @@ add the following dependency to your Package.swift file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/request-dl/swift-openapi-request-dl.git", from: "0.1.1")
+    .package(url: "https://github.com/request-dl/swift-openapi-request-dl.git", from: "1.0.0")
 ]
 ```
 

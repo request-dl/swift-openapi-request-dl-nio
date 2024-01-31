@@ -5,6 +5,7 @@
 import OpenAPIRuntime
 import RequestDL
 import Foundation
+import HTTPTypes
 
 /**
  A `ClientTransport` that utilizes `RequestDL` to execute HTTP requests.
@@ -87,39 +88,46 @@ public struct RequestDLClientTransport: ClientTransport {
     // MARK: - Public methods
 
     public func send(
-        _ request: OpenAPIRuntime.Request,
+        _ request: HTTPRequest,
+        body: HTTPBody?,
         baseURL: URL,
         operationID: String
-    ) async throws -> OpenAPIRuntime.Response {
-
-        let scheme = baseURL.scheme ?? "http"
-        let url = baseURL.absoluteString.replacingOccurrences(
-            of: scheme + "://",
-            with: ""
-        )
-        var components = url.split(separator: "/")
-        let baseURL = components.removeFirst()
-
+    ) async throws -> (HTTPResponse, HTTPBody?) {
         let response = try await task(AnyProperty(
             PropertyGroup {
                 content
 
-                BaseURL(.init(scheme), host: String(baseURL))
-                PropertyForEach(components, id: \.self) {
-                    Path($0)
-                }
-
-                OpenAPIRequest(request: request)
+                OpenAPIRequest(
+                    baseURL: baseURL,
+                    request: request,
+                    httpBody: body
+                )
             }
         ))
         .result()
 
-        return .init(
-            statusCode: Int(response.head.status.code),
-            headerFields: response.head.headers.map {
-                .init(name: $0, value: $1)
-            },
-            body: response.payload
+        var headers = HTTPFields()
+        for header in response.head.headers {
+            if let name = HTTPField.Name(header.name) {
+                headers.append(HTTPField(
+                    name: name,
+                    value: header.value
+                ))
+            }
+        }
+
+        return (
+            HTTPResponse(
+                status: HTTPResponse.Status(
+                    integerLiteral: Int(response.head.status.code)
+                ),
+                headerFields: headers
+            ),
+            HTTPBody(
+                response.payload,
+                length: .known(Int64(response.payload.count)),
+                iterationBehavior: .multiple
+            )
         )
     }
 }

@@ -15,11 +15,11 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/request-dl/request-dl.git",
-            from: "3.0.1"
+            from: "3.0.2"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "0.1.9"
+            from: "1.3.2"
         ),
         .package(
             url: "https://github.com/apple/swift-docc-plugin",
