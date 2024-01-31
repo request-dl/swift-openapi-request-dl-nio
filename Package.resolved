@@ -10,9 +10,9 @@
       }
     },
     {
-      "identity" : "request-dl",
+      "identity" : "request-dl-nio",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/request-dl/request-dl.git",
+      "location" : "https://github.com/request-dl/request-dl-nio.git",
       "state" : {
         "revision" : "75f4c68c456ddf1ba0327845e3104eaa392764fd",
         "version" : "3.0.2"
