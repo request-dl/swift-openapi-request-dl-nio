@@ -5,6 +5,7 @@
 import XCTest
 import OpenAPIRuntime
 import RequestDL
+import HTTPTypes
 @testable import OpenAPIRequestDL
 
 final class RequestDLClientTransportTests: XCTestCase {
@@ -31,30 +32,42 @@ final class RequestDLClientTransportTests: XCTestCase {
         // Given
         let data = Data("hello world!".utf8)
 
-        let request = OpenAPIRuntime.Request(
-            path: "/path/to/some/content",
-            query: "id=102",
+        let request = HTTPRequest(
             method: .post,
-            headerFields: [
-                .init(name: "content-type", value: "application/json")
-            ],
-            body: data
+            scheme: nil,
+            authority: nil,
+            path: "/path/to/some/content?id=102",
+            headerFields: .init([
+                HTTPField(
+                    name: try XCTUnwrap(HTTPField.Name("content-type")),
+                    value: "application/json"
+                )
+            ])
         )
 
         // When
-        let response = try await transport.send(
+        let (response, body) = try await transport.send(
             request,
+            body: .init(data, length: .known(Int64(data.count))),
             baseURL: try XCTUnwrap(URL(string: "https://api.example.org/v1/")),
             operationID: "100"
         )
 
+        let receivedData = try await body?.toData()
+
         // Then
-        XCTAssertEqual(response.body, data)
-        XCTAssertEqual(response.statusCode, 200)
-        XCTAssertEqual(response.headerFields, [
-            HeaderField(name: "Content-Type", value: "application/json"),
-            HeaderField(name: "Content-Length", value: String(data.count))
-        ])
+        try XCTAssertEqual(XCTUnwrap(receivedData), data)
+        XCTAssertEqual(response.status.code, 200)
+        XCTAssertEqual(response.headerFields, .init([
+            try HTTPField(
+                name: XCTUnwrap(HTTPField.Name("Content-Type")),
+                value: "application/json"
+            ),
+            try HTTPField(
+                name: XCTUnwrap(HTTPField.Name("Content-Length")),
+                value: String(data.count)
+            )
+        ]))
     }
 
     func testClient_whenSendWithCustomConfiguration() async throws {
@@ -74,30 +87,56 @@ final class RequestDLClientTransportTests: XCTestCase {
 
         let data = Data("hello world!".utf8)
 
-        let request = OpenAPIRuntime.Request(
-            path: "/path/to/some/content",
-            query: "id=102",
+        let request = HTTPRequest(
             method: .post,
-            headerFields: [
-                .init(name: "content-type", value: "application/json")
-            ],
-            body: data
+            scheme: nil,
+            authority: nil,
+            path: "/path/to/some/content?id=102",
+            headerFields: .init([
+                try HTTPField(
+                    name: XCTUnwrap(HTTPField.Name("content-type")),
+                    value: "application/json"
+                )
+            ])
         )
 
         // When
-        let response = try await transport.send(
+        let (response, body) = try await transport.send(
             request,
+            body: .init(data, length: .known(Int64(data.count))),
             baseURL: try XCTUnwrap(URL(string: "https://api.example.org/v1/")),
             operationID: "100"
         )
 
+        let receivedData = try await body?.toData()
+
         // Then
-        XCTAssertEqual(response.body, data)
-        XCTAssertEqual(response.statusCode, 202)
-        XCTAssertEqual(response.headerFields, [
-            HeaderField(name: "Accept", value: "text/plain"),
-            HeaderField(name: "Content-Type", value: "application/json"),
-            HeaderField(name: "Content-Length", value: String(data.count))
-        ])
+        XCTAssertEqual(receivedData, data)
+        XCTAssertEqual(response.status.code, 202)
+        XCTAssertEqual(response.headerFields, .init([
+            try HTTPField(
+                name: XCTUnwrap(HTTPField.Name("Accept")),
+                value: "text/plain"
+            ),
+            try HTTPField(
+                name: XCTUnwrap(HTTPField.Name("Content-Type")),
+                value: "application/json"
+            ),
+            try HTTPField(
+                name: XCTUnwrap(HTTPField.Name("Content-Length")),
+                value: String(data.count)
+            )
+        ]))
+    }
+}
+
+extension HTTPBody {
+
+    func toData() async throws -> Data {
+        var data = Data()
+        for try await bytes in self {
+            data.append(contentsOf: bytes)
+        }
+        return data
     }
 }
