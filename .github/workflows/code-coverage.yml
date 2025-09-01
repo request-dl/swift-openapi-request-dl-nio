@@ -58,7 +58,7 @@ jobs:
             name: "macOS Catalyst"
     uses: request-dl/.github/.github/workflows/apple-tests.yml@main
     with:
-      package-name: "swift-openapi-request-dl"
+      package-name: "swift-openapi-request-dl-nio"
       destination: ${{ matrix.destination }}
       name: ${{ matrix.name }}
       coverage-enabled: true
