@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -15,15 +15,15 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/request-dl/request-dl-nio.git",
-            from: "3.0.2"
+            from: "3.0.3"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "1.3.2"
+            from: "1.8.2"
         ),
         .package(
             url: "https://github.com/apple/swift-docc-plugin",
-            from: "1.3.0"
+            from: "1.4.5"
         )
     ],
     targets: [
