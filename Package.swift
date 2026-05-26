@@ -15,11 +15,11 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/request-dl/request-dl-nio.git",
-            from: "3.1.2"
+            from: "3.1.6"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "1.9.0"
+            from: "1.12.0"
         )
     ],
     targets: [
