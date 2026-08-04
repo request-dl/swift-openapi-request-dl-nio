@@ -1,14 +1,20 @@
-/*
- See LICENSE for this package's licensing information.
-*/
+//
+// See LICENSE for this package's licensing information.
+//
 
-import Foundation
 import HTTPTypes
 import OpenAPIRuntime
 import RequestDL
 import Testing
 
 @testable import OpenAPIRequestDL
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import struct Foundation.Data
+import struct Foundation.URL
+#endif
 
 // RequestDL (async-fixes branch, PropertyMockedTask): `MockedTask` now injects a synthetic
 // `rdl-request-method` header into every mocked response, reflecting the resolved request's

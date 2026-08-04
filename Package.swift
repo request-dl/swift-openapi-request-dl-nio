@@ -25,14 +25,14 @@ let package = Package(
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
             from: "1.12.0"
-        )
+        ),
     ],
     targets: [
         .target(
             name: "OpenAPIRequestDL",
             dependencies: [
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-                .product(name: "RequestDL", package: "request-dl-nio")
+                .product(name: "RequestDL", package: "request-dl-nio"),
             ]
         ),
         .testTarget(
@@ -40,8 +40,8 @@ let package = Package(
             dependencies: [
                 "OpenAPIRequestDL",
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-                .product(name: "RequestDL", package: "request-dl-nio")
+                .product(name: "RequestDL", package: "request-dl-nio"),
             ]
-        )
+        ),
     ]
 )
