@@ -17,21 +17,20 @@ on:
       - '.swift-format'
       - '.github/workflows/swift-ci.yaml'
 
+# Cancel any in-progress or queued run for the same repo + ref when a new
+# run is triggered (e.g. new push), so stale xcodebuild/swift test
+# processes don't keep running and don't sit blocking the queue.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.run_id || github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.repository }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   ci:
     name: "Swift CI"
-    uses: request-dl/.github/.github/workflows/swift-ci.yaml@main
+    uses: request-dl/.github/.github/workflows/swift-ci.yaml@ci-cleanup
     with:
-      # Nome do repositório/pacote (usado para dependência local no linkage test)
       name: swift-openapi-request-dl-nio
-
-      # Nome da biblioteca importável (usado no .product(name:package:))
       product-name: OpenAPIRequestDL
-
       swift-version: '6.2'
       platform: macos-26
 
@@ -42,6 +41,7 @@ jobs:
       # Step 2
       enable-breaking-changes: true
       skip-on-major-update: true
+      force-skip-breaking-changes: ${{ contains(github.event.pull_request.labels.*.name, 'force-skip-ci') }}
 
       # Step 3 – Apple
       enable-apple-tests: true
@@ -52,7 +52,9 @@ jobs:
       # Step 3 – Third Party
       enable-third-party-tests: true
       third-party-coverage-enabled: true
-      test-foundation-essentials: true
+
+      # Step 3 – Linkage Test (renomeado de test-foundation-essentials)
+      enable-linkage-test: true
 
       # Step 4
       enable-coverage-upload: true
