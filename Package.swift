@@ -20,7 +20,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/request-dl/request-dl-nio.git",
-            from: "3.1.5"
+            branch: "async-fixes"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
