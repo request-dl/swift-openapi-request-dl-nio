@@ -2,18 +2,24 @@
  See LICENSE for this package's licensing information.
 */
 
-import XCTest
+import Foundation
+import HTTPTypes
 import OpenAPIRuntime
 import RequestDL
-import HTTPTypes
+import Testing
+
 @testable import OpenAPIRequestDL
 
-final class RequestDLClientTransportTests: XCTestCase {
+// RequestDL (async-fixes branch, PropertyMockedTask): `MockedTask` now injects a synthetic
+// `rdl-request-method` header into every mocked response, reflecting the resolved request's
+// HTTP method. See request-dl-nio commit 8ce3d552 ("Fixes MockedTask Behavior").
+private let mockedRequestMethodHeaderName = "rdl-request-method"
 
-    var transport: RequestDLClientTransport!
+@Suite struct RequestDLClientTransportTests {
 
-    override func setUp() async throws {
-        try await super.setUp()
+    let transport: RequestDLClientTransport
+
+    init() {
         transport = .init(content: EmptyProperty()) { request in
             MockedTask(
                 status: .init(code: 200, reason: "Ok"),
@@ -23,14 +29,11 @@ final class RequestDLClientTransportTests: XCTestCase {
         }
     }
 
-    override func tearDown() async throws {
-        try await super.tearDown()
-        transport = nil
-    }
-
-    func testClient_whenSend() async throws {
+    @Test func send() async throws {
         // Given
         let data = Data("hello world!".utf8)
+
+        let contentTypeFieldName = try #require(HTTPField.Name("content-type"))
 
         let request = HTTPRequest(
             method: .post,
@@ -38,39 +41,41 @@ final class RequestDLClientTransportTests: XCTestCase {
             authority: nil,
             path: "/path/to/some/content?id=102",
             headerFields: .init([
-                HTTPField(
-                    name: try XCTUnwrap(HTTPField.Name("content-type")),
-                    value: "application/json"
-                )
+                HTTPField(name: contentTypeFieldName, value: "application/json")
             ])
         )
+
+        let baseURL = try #require(URL(string: "https://api.example.org/v1/"))
 
         // When
         let (response, body) = try await transport.send(
             request,
             body: .init(data, length: .known(Int64(data.count))),
-            baseURL: try XCTUnwrap(URL(string: "https://api.example.org/v1/")),
+            baseURL: baseURL,
             operationID: "100"
         )
 
         let receivedData = try await body?.toData()
+        let unwrappedReceivedData = try #require(receivedData)
+
+        let contentTypeHeaderName = try #require(HTTPField.Name("Content-Type"))
+        let contentLengthHeaderName = try #require(HTTPField.Name("Content-Length"))
+        let mockedMethodHeaderName = try #require(HTTPField.Name(mockedRequestMethodHeaderName))
 
         // Then
-        try XCTAssertEqual(XCTUnwrap(receivedData), data)
-        XCTAssertEqual(response.status.code, 200)
-        XCTAssertEqual(response.headerFields, .init([
-            try HTTPField(
-                name: XCTUnwrap(HTTPField.Name("Content-Type")),
-                value: "application/json"
-            ),
-            try HTTPField(
-                name: XCTUnwrap(HTTPField.Name("Content-Length")),
-                value: String(data.count)
-            )
-        ]))
+        #expect(unwrappedReceivedData == data)
+        #expect(response.status.code == 200)
+        #expect(
+            response.headerFields
+                == .init([
+                    HTTPField(name: contentTypeHeaderName, value: "application/json"),
+                    HTTPField(name: contentLengthHeaderName, value: String(data.count)),
+                    HTTPField(name: mockedMethodHeaderName, value: "POST"),
+                ])
+        )
     }
 
-    func testClient_whenSendWithCustomConfiguration() async throws {
+    @Test func sendWithCustomConfiguration() async throws {
         // Given
         let transport = RequestDLClientTransport(
             content: PropertyGroup {
@@ -87,46 +92,47 @@ final class RequestDLClientTransportTests: XCTestCase {
 
         let data = Data("hello world!".utf8)
 
+        let contentTypeFieldName = try #require(HTTPField.Name("content-type"))
+
         let request = HTTPRequest(
             method: .post,
             scheme: nil,
             authority: nil,
             path: "/path/to/some/content?id=102",
             headerFields: .init([
-                try HTTPField(
-                    name: XCTUnwrap(HTTPField.Name("content-type")),
-                    value: "application/json"
-                )
+                HTTPField(name: contentTypeFieldName, value: "application/json")
             ])
         )
+
+        let baseURL = try #require(URL(string: "https://api.example.org/v1/"))
 
         // When
         let (response, body) = try await transport.send(
             request,
             body: .init(data, length: .known(Int64(data.count))),
-            baseURL: try XCTUnwrap(URL(string: "https://api.example.org/v1/")),
+            baseURL: baseURL,
             operationID: "100"
         )
 
         let receivedData = try await body?.toData()
 
+        let acceptHeaderName = try #require(HTTPField.Name("Accept"))
+        let contentTypeHeaderName = try #require(HTTPField.Name("Content-Type"))
+        let contentLengthHeaderName = try #require(HTTPField.Name("Content-Length"))
+        let mockedMethodHeaderName = try #require(HTTPField.Name(mockedRequestMethodHeaderName))
+
         // Then
-        XCTAssertEqual(receivedData, data)
-        XCTAssertEqual(response.status.code, 202)
-        XCTAssertEqual(response.headerFields, .init([
-            try HTTPField(
-                name: XCTUnwrap(HTTPField.Name("Accept")),
-                value: "text/plain"
-            ),
-            try HTTPField(
-                name: XCTUnwrap(HTTPField.Name("Content-Type")),
-                value: "application/json"
-            ),
-            try HTTPField(
-                name: XCTUnwrap(HTTPField.Name("Content-Length")),
-                value: String(data.count)
-            )
-        ]))
+        #expect(receivedData == data)
+        #expect(response.status.code == 202)
+        #expect(
+            response.headerFields
+                == .init([
+                    HTTPField(name: acceptHeaderName, value: "text/plain"),
+                    HTTPField(name: contentTypeHeaderName, value: "application/json"),
+                    HTTPField(name: contentLengthHeaderName, value: String(data.count)),
+                    HTTPField(name: mockedMethodHeaderName, value: "POST"),
+                ])
+        )
     }
 }
 
