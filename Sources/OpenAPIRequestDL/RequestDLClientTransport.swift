@@ -43,7 +43,7 @@ public struct RequestDLClientTransport: ClientTransport {
     // MARK: - Private properties
 
     private let content: AnyProperty
-    private let task: @Sendable (AnyProperty) -> any RequestTask<TaskResult<Data>>
+    private let task: @Sendable (AnyProperty) -> any RequestTask<TaskResult<AsyncBytes>>
 
     // MARK: - Inits
 
@@ -75,13 +75,36 @@ public struct RequestDLClientTransport: ClientTransport {
     public init<Content: Property>(@PropertyBuilder content: () -> Content) {
         self.init(
             content: content(),
-            task: { request in DataTask { request } }
+            task: { request in DownloadTask { request } }
         )
+    }
+
+    /// Initializes the `RequestDLClientTransport` with a content closure and a custom task strategy.
+    ///
+    /// Use this initializer to customize how requests are executed — for example to attach progress
+    /// tracking, interceptors, logging, or error mapping via RequestDL's task modifiers — as long as
+    /// the result stays `TaskResult<AsyncBytes>`.
+    ///
+    /// Example usage:
+    ///
+    /// ```swift
+    /// let transport = RequestDLClientTransport {
+    ///     BaseURL("https://api.example.com")
+    /// } task: { request in
+    ///     DownloadTask { request }
+    ///         .progress(download: MyDownloadProgress())
+    /// }
+    /// ```
+    public init<Content: Property>(
+        @PropertyBuilder content: () -> Content,
+        task: @escaping @Sendable (AnyProperty) -> any RequestTask<TaskResult<AsyncBytes>>
+    ) {
+        self.init(content: content(), task: task)
     }
 
     init<Content: Property>(
         content: Content,
-        task: @escaping @Sendable (AnyProperty) -> any RequestTask<TaskResult<Data>>
+        task: @escaping @Sendable (AnyProperty) -> any RequestTask<TaskResult<AsyncBytes>>
     ) {
         self.content = .init(content)
         self.task = task
@@ -111,6 +134,8 @@ public struct RequestDLClientTransport: ClientTransport {
         .result()
 
         var headers = HTTPFields()
+        var contentLength: Int64?
+
         for header in response.head.headers {
             if let name = HTTPField.Name(header.name) {
                 headers.append(
@@ -119,6 +144,10 @@ public struct RequestDLClientTransport: ClientTransport {
                         value: header.value
                     )
                 )
+
+                if name == .contentLength {
+                    contentLength = Int64(header.value)
+                }
             }
         }
 
@@ -131,8 +160,8 @@ public struct RequestDLClientTransport: ClientTransport {
             ),
             HTTPBody(
                 response.payload,
-                length: .known(Int64(response.payload.count)),
-                iterationBehavior: .multiple
+                length: contentLength.map { .known($0) } ?? .unknown,
+                iterationBehavior: .single
             )
         )
     }

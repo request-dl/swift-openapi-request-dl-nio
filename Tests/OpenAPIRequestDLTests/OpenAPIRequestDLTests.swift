@@ -31,7 +31,7 @@ private let mockedRequestMethodHeaderName = "rdl-request-method"
                 status: .init(code: 200, reason: "Ok"),
                 content: { request }
             )
-            .collectData()
+            .collectBytes()
         }
     }
 
@@ -92,7 +92,7 @@ private let mockedRequestMethodHeaderName = "rdl-request-method"
                     status: .init(code: 202, reason: "Ok"),
                     content: { request }
                 )
-                .collectData()
+                .collectBytes()
             }
         )
 
@@ -139,6 +139,74 @@ private let mockedRequestMethodHeaderName = "rdl-request-method"
                     HTTPField(name: mockedMethodHeaderName, value: "POST"),
                 ])
         )
+    }
+
+    @Test func sendUsingThePublicCustomTaskInitializer() async throws {
+        // Given
+        let transport = RequestDLClientTransport {
+            AcceptHeader(.text)
+        } task: { request in
+            MockedTask(
+                status: .init(code: 200, reason: "Ok"),
+                content: { request }
+            )
+            .collectBytes()
+        }
+
+        let data = Data("hello world!".utf8)
+        let baseURL = try #require(URL(string: "https://api.example.org/v1/"))
+
+        let request = HTTPRequest(
+            method: .post,
+            scheme: nil,
+            authority: nil,
+            path: "/path"
+        )
+
+        // When
+        let (response, body) = try await transport.send(
+            request,
+            body: .init(data, length: .known(Int64(data.count))),
+            baseURL: baseURL,
+            operationID: "100"
+        )
+
+        let receivedData = try await body?.toData()
+
+        // Then
+        #expect(receivedData == data)
+        #expect(response.status.code == 200)
+    }
+
+    @Test func sendWithoutContentLengthProducesUnknownBodyLength() async throws {
+        // Given
+        let transport = RequestDLClientTransport(content: EmptyProperty()) { request in
+            MockedTask(
+                status: .init(code: 200, reason: "Ok"),
+                content: { request }
+            )
+            .collectBytes()
+        }
+
+        let baseURL = try #require(URL(string: "https://api.example.org/v1/"))
+
+        let request = HTTPRequest(
+            method: .get,
+            scheme: nil,
+            authority: nil,
+            path: "/path"
+        )
+
+        // When
+        let (_, body) = try await transport.send(
+            request,
+            body: nil,
+            baseURL: baseURL,
+            operationID: "100"
+        )
+
+        // Then
+        #expect(body?.length == .unknown)
     }
 }
 
