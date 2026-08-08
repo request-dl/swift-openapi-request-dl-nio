@@ -41,7 +41,7 @@ CI (`.github/workflows/swift-ci.yaml`) runs against Swift 6.2 / Xcode 26.6 on `m
 
 Two files do all the work, both under `Sources/OpenAPIRequestDL/`:
 
-- **`RequestDLClientTransport.swift`** (public) — implements `ClientTransport.send(_:body:baseURL:operationID:)`. It wraps user-supplied RequestDL `Property` content (passed via `@PropertyBuilder` in `init`) together with an `OpenAPIRequest` inside a `PropertyGroup`, executes it as a `DataTask` (injectable via the internal `task` closure for testing — see `MockedTask` usage in tests), and converts the resulting `TaskResult<Data>` back into `(HTTPResponse, HTTPBody?)`. Response headers are translated from RequestDL's header representation into `HTTPFields`.
+- **`RequestDLClientTransport.swift`** (public) — implements `ClientTransport.send(_:body:baseURL:operationID:)`. It wraps user-supplied RequestDL `Property` content (passed via `@PropertyBuilder` in `init`) together with an `OpenAPIRequest` inside a `PropertyGroup`, executes it as a `DownloadTask` by default and converts the resulting `TaskResult<AsyncBytes>` back into `(HTTPResponse, HTTPBody?)`, streaming the response body instead of buffering it. The `task` closure (`@Sendable (AnyProperty) -> any RequestTask<TaskResult<AsyncBytes>>`) is public and overridable via `init(content:task:)`, so callers can swap in RequestDL task modifiers (progress tracking, interceptors, logger, `onStatusCode`, etc.) as long as the result stays `TaskResult<AsyncBytes>` — see `MockedTask` usage in tests for the pattern. Response headers are translated from RequestDL's header representation into `HTTPFields`; `Content-Length` (when present) drives `HTTPBody.Length.known`, otherwise `.unknown` is used, and `iterationBehavior` is `.single` since the underlying stream can only be consumed once.
 
 - **`OpenAPIRequest.swift`** (internal) — a RequestDL `Property` that translates an `OpenAPIRuntime.HTTPRequest`/`HTTPBody` into RequestDL primitives:
   - `baseURL` + `request.path` are merged into `URLComponents` (percent-encoded path/query preserved), then split into `BaseURL`, `Path`, and `Query` properties.
@@ -53,7 +53,7 @@ When modifying request/response translation, both files usually need to be consi
 
 ### Testing pattern
 
-Tests inject a fake `task` closure that returns a `MockedTask` (from RequestDL's test utilities) instead of hitting the network, then assert on the resulting `HTTPResponse`/`HTTPBody`. Use the internal `init(content:task:)` initializer (not the public `@PropertyBuilder` init) to supply this mock in new tests.
+Tests inject a fake `task` closure that returns a `MockedTask` (from RequestDL's test utilities) instead of hitting the network, then assert on the resulting `HTTPResponse`/`HTTPBody`. Either the internal `init(content: Content, task:)` (value-based content, `@testable import`-only) or the public `init(content: () -> Content, task:)` (`@PropertyBuilder` + trailing-closure `task:`) work for this. Mocked results must resolve to `TaskResult<AsyncBytes>` (e.g. `MockedTask { ... }.collectBytes()`, not `.collectData()`).
 
 ## Code style
 
