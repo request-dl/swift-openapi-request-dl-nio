@@ -33,7 +33,8 @@ let package = Package(
             dependencies: [
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "RequestDL", package: "request-dl-nio"),
-            ]
+            ],
+            swiftSettings: [.defaultIsolation(nil)]
         ),
         .testTarget(
             name: "OpenAPIRequestDLTests",
