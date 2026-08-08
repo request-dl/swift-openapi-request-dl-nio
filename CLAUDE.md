@@ -61,5 +61,5 @@ Formatting is enforced by `swift-format` using `.swift-format` at the repo root 
 
 ## Dependencies
 
-- `RequestDL` — currently pinned to the `async-fixes` branch of `request-dl/request-dl-nio` in `Package.swift` (not a release tag; this is a working branch, matches the current git branch name).
+- `RequestDL` — pinned to `4.0.2` (exact version) of `request-dl/request-dl-nio` in `Package.swift`.
 - `swift-openapi-runtime` — from `1.12.0`.
