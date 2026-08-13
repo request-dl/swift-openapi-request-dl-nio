@@ -1,11 +1,18 @@
-/*
- See LICENSE for this package's licensing information.
-*/
+//
+// See LICENSE for this package's licensing information.
+//
 
-import OpenAPIRuntime
 import HTTPTypes
+import OpenAPIRuntime
 import RequestDL
-import Foundation
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import struct Foundation.URL
+import struct Foundation.URLComponents
+import struct Foundation.Data
+#endif
 
 struct OpenAPIRequest: Property {
 
