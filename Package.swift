@@ -24,7 +24,8 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            branch: "main"
+            branch: "main",
+            traits: []
         ),
     ],
     targets: [
