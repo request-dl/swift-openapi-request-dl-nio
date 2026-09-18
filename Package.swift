@@ -19,12 +19,12 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/request-dl/request-dl-nio.git",
-            exact: "4.3.0"
+            url: "https://github.com/request-dl/request-dl-nio",
+            from: "4.3.1"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            revision: "e48392d4a8df6e09d1fb5b4432b383baaaf47000",
+            from: "1.12.1",
             traits: []
         ),
     ],
