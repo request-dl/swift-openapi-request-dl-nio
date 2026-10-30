@@ -17,10 +17,28 @@ let package = Package(
             targets: ["OpenAPIRequestDL"]
         )
     ],
+    traits: [
+        .trait(
+            name: "NIOTransport",
+            description: """
+                Forwards RequestDL's `NIOTransport` trait, which pulls in AsyncHTTPClient/SwiftNIO/NIOSSL \
+                and backs RequestDL's `.nio`/`.nioTransportServices` executors. Disabling it \
+                (`--disable-default-traits`, or `traits: []` on the dependency) drops that whole \
+                dependency subgraph and leaves the transport running over `.urlSession` only. \
+                Darwin only: RequestDL's `.urlSession` executor is itself Darwin-exclusive, so \
+                disabling this trait on any other platform leaves no executor at all and the \
+                package won't build.
+                """
+        ),
+        .default(enabledTraits: ["NIOTransport"]),
+    ],
     dependencies: [
         .package(
             url: "https://github.com/request-dl/request-dl-nio",
-            from: "4.5.5"
+            from: "4.5.5",
+            traits: [
+                .trait(name: "NIOTransport", condition: .when(traits: ["NIOTransport"]))
+            ]
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
