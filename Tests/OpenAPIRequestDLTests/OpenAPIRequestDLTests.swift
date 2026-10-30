@@ -208,6 +208,89 @@ private let mockedRequestMethodHeaderName = "rdl-request-method"
         // Then
         #expect(body?.length == .unknown)
     }
+
+    @Test func sendWithBaseURLWithoutScheme() async throws {
+        // Given
+        let baseURL = try #require(URL(string: "//api.example.org/v1/"))
+
+        let request = HTTPRequest(
+            method: .get,
+            scheme: nil,
+            authority: nil,
+            path: "/path"
+        )
+
+        // When
+        let (response, _) = try await transport.send(
+            request,
+            body: nil,
+            baseURL: baseURL,
+            operationID: "100"
+        )
+
+        // Then
+        #expect(response.status.code == 200)
+    }
+
+    @Test func sendWithoutPath() async throws {
+        // Given
+        let baseURL = try #require(URL(string: "https://api.example.org/v1/"))
+
+        let request = HTTPRequest(
+            method: .get,
+            scheme: nil,
+            authority: nil,
+            path: nil
+        )
+
+        // When
+        let (response, _) = try await transport.send(
+            request,
+            body: nil,
+            baseURL: baseURL,
+            operationID: "100"
+        )
+
+        // Then
+        #expect(response.status.code == 200)
+    }
+
+    @Test func defaultTaskStrategyPerformsTheRequest() async throws {
+        // Given
+        let transport = RequestDLClientTransport()
+
+        // Nothing listens on port 1, so the connection is refused right away.
+        let baseURL = try #require(URL(string: "http://127.0.0.1:1/"))
+
+        let request = HTTPRequest(
+            method: .get,
+            scheme: nil,
+            authority: nil,
+            path: "/path"
+        )
+
+        // When / Then
+        await #expect(throws: (any Error).self) {
+            _ = try await transport.send(
+                request,
+                body: nil,
+                baseURL: baseURL,
+                operationID: "100"
+            )
+        }
+    }
+
+    @Test func publicInitializersDoNotRequireArguments() {
+        // When
+        let transport = RequestDLClientTransport()
+        let transportWithContent = RequestDLClientTransport {
+            AcceptHeader(.text)
+        }
+
+        // Then
+        #expect(String(describing: type(of: transport)) == "RequestDLClientTransport")
+        #expect(String(describing: type(of: transportWithContent)) == "RequestDLClientTransport")
+    }
 }
 
 extension HTTPBody {
