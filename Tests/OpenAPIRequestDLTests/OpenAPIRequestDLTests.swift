@@ -255,29 +255,15 @@ private let mockedRequestMethodHeaderName = "rdl-request-method"
         #expect(response.status.code == 200)
     }
 
-    @Test func defaultTaskStrategyPerformsTheRequest() async throws {
+    @Test func defaultTaskStrategyBuildsADownloadTask() {
         // Given
         let transport = RequestDLClientTransport()
 
-        // Nothing listens on port 1, so the connection is refused right away.
-        let baseURL = try #require(URL(string: "http://127.0.0.1:1/"))
+        // When
+        let task = transport.task(AnyProperty(EmptyProperty()))
 
-        let request = HTTPRequest(
-            method: .get,
-            scheme: nil,
-            authority: nil,
-            path: "/path"
-        )
-
-        // When / Then
-        await #expect(throws: (any Error).self) {
-            _ = try await transport.send(
-                request,
-                body: nil,
-                baseURL: baseURL,
-                operationID: "100"
-            )
-        }
+        // Then
+        #expect(task is DownloadTask<AnyProperty>)
     }
 
     @Test func publicInitializersDoNotRequireArguments() {

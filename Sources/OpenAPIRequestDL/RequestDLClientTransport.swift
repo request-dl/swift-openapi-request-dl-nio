@@ -43,7 +43,10 @@ public struct RequestDLClientTransport: ClientTransport {
     // MARK: - Private properties
 
     private let content: AnyProperty
-    private let task: @Sendable (AnyProperty) -> any RequestTask<TaskResult<AsyncBytes>>
+
+    // MARK: - Internal properties
+
+    let task: @Sendable (AnyProperty) -> any RequestTask<TaskResult<AsyncBytes>>
 
     // MARK: - Inits
 
