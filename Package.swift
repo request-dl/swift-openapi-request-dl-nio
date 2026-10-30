@@ -36,8 +36,12 @@ let package = Package(
         .package(
             url: "https://github.com/request-dl/request-dl-nio",
             from: "4.5.5",
+            // The condition lists `default` alongside `NIOTransport` on purpose. With `NIOTransport`
+            // alone, SwiftPM's resolver fails ("exhausted attempts to resolve the dependencies graph")
+            // for any consumer that takes this package's default traits, since it prunes request-dl-nio's
+            // NIO packages before the default trait is expanded and then needs them.
             traits: [
-                .trait(name: "NIOTransport", condition: .when(traits: ["NIOTransport"]))
+                .trait(name: "NIOTransport", condition: .when(traits: ["default", "NIOTransport"]))
             ]
         ),
         .package(
