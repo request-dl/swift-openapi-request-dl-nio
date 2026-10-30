@@ -23,6 +23,26 @@ dependencies: [
 ]
 ```
 
+### Building without SwiftNIO
+
+By default the package pulls in SwiftNIO, AsyncHTTPClient and NIOSSL through RequestDL's `NIOTransport` trait. That trait is
+forwarded here under the same name and is enabled by default. To drop that whole dependency subgraph and run over
+`URLSession` only, disable it on the dependency:
+
+```swift
+dependencies: [
+    .package(
+        url: "https://github.com/request-dl/swift-openapi-request-dl-nio.git",
+        from: "1.0.1",
+        traits: []
+    )
+]
+```
+
+Or, when building this package on its own, pass `--disable-default-traits` to `swift build` / `swift test`.
+
+Disabling `NIOTransport` is supported on Apple platforms only, since RequestDL's `.urlSession` executor is Darwin-exclusive.
+
 ## Versioning
 
 We follow semantic versioning for this project. The version number is composed of three parts: MAJOR.MINOR.PATCH.
