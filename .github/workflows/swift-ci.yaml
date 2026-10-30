@@ -9,6 +9,7 @@ on:
       - 'Tests/**'
       - '.swift-format'
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [main]
     paths:
       - 'Package.swift'
@@ -16,6 +17,7 @@ on:
       - 'Tests/**'
       - '.swift-format'
       - '.github/workflows/swift-ci.yaml'
+  workflow_dispatch: {}
 
 # Cancel any in-progress or queued run for the same ref when a new run is
 # triggered (e.g. new push), so stale xcodebuild/swift test processes don't
@@ -31,38 +33,58 @@ concurrency:
 jobs:
   ci:
     name: "Swift CI"
+    # Skip draft PRs -- `pull_request`'s `synchronize`/`opened`/`reopened` fire regardless of
+    # draft state, so this has to be a job-level condition, not a trigger filter. Push events
+    # (main) have no `pull_request` payload at all, hence the `event_name` guard first.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     uses: request-dl/.github/.github/workflows/swift-ci.yaml@main
     with:
       name: swift-openapi-request-dl-nio
       product-name: OpenAPIRequestDL
-      swift-version: '6.2'
-      platform: macos-26
+      swift-version: '6.4'
+      platform: xcode-27
 
       # Step 1
-      enable-format: true
-      format-swift-version: '6.3'
+      enable-header-validation: true
+      header-template: |
+        //
+        // See LICENSE for this package's licensing information.
+        //
 
       # Step 2
-      enable-breaking-changes: true
+      enable-format: true
+      format-swift-version: '6.4'
+
+      # Step 3
+      # Off until swift package diagnose-api-breaking-changes works on the xcode-27 image.
+      enable-breaking-changes: false
       skip-on-major-update: true
       force-skip-breaking-changes: ${{ contains(github.event.pull_request.labels.*.name, 'force-skip-ci') }}
 
-      # Step 3 – Apple
+      # Step 4 – Apple
       enable-apple-tests: true
       package-name: "swift-openapi-request-dl-nio"
-      xcode-version: '26.6'
+      xcode-version: '27.1'
       apple-coverage-enabled: true
+      apple-tests-matrix: >-
+        [{"destination":"platform=iOS Simulator,arch=arm64,name=iPhone 18 Pro,OS=27.0","name":"iOS"},
+        {"destination":"platform=iOS Simulator,arch=arm64,name=iPad (A16),OS=27.0","name":"iPadOS"},
+        {"destination":"platform=watchOS Simulator,arch=arm64,name=Apple Watch Series 12 (42mm),OS=27.0","name":"watchOS"},
+        {"destination":"platform=tvOS Simulator,arch=arm64,name=Apple TV 4K (3rd generation) (at 1080p),OS=27.0","name":"tvOS"},
+        {"destination":"platform=visionOS Simulator,arch=arm64,name=Apple Vision Pro,OS=27.0","name":"visionOS"},
+        {"destination":"platform=macOS,arch=arm64,name=My Mac","name":"macOS"},
+        {"destination":"platform=macOS,arch=arm64,variant=Mac Catalyst,name=My Mac","name":"macOS Catalyst"}]
 
-      # Step 3 – Third Party
+      # Step 4 – Third Party
       enable-third-party-tests: true
       third-party-coverage-enabled: true
 
-      # Step 3 – Linkage Test (renomeado de test-foundation-essentials)
+      # Step 4 – Linkage Test (renomeado de test-foundation-essentials)
       enable-linkage-test: true
 
-      # Step 3 – Android Build
+      # Step 4 – Android Build
       enable-android-build: true
 
-      # Step 4
+      # Step 5
       enable-coverage-upload: true
     secrets: inherit
