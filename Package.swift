@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3
+// swift-tools-version: 6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -35,7 +35,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/request-dl/request-dl-nio",
-            from: "4.5.5",
+            from: "4.5.7",
             // The condition lists `default` alongside `NIOTransport` on purpose. With `NIOTransport`
             // alone, SwiftPM's resolver fails ("exhausted attempts to resolve the dependencies graph")
             // for any consumer that takes this package's default traits, since it prunes request-dl-nio's
@@ -46,7 +46,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "1.13.3",
+            from: "1.13.4",
             traits: []
         ),
     ],
